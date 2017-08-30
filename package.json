@@ -1,0 +1,22 @@
+{
+  "name": "h5-flexible",
+  "version": "0.0.1",
+  "description": "",
+  "main": "flexible.js",
+  "scripts": {
+    "compress": "uglifyjs flexible.js -o flexible.min.js -c -m"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/emeiziying/h5-flexible.git"
+  },
+  "author": "emeiziying",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/emeiziying/h5-flexible/issues"
+  },
+  "homepage": "https://github.com/emeiziying/h5-flexible#readme",
+  "dependencies": {
+    "uglify-js": "^3.0.28"
+  }
+}
