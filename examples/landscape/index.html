@@ -7,31 +7,88 @@
     <title>Title</title>
 
     <script>
-		!function (e, t) {
-			function n() {
-				var n = l.getBoundingClientRect().width;
-				n > (t = t || 640) && (n = t);
-				var i       = 100 * n / e;
-				r.innerHTML = "html{font-size:" + i + "px;}"
-			}
-
-			var i, d = document, o = window, l = d.documentElement, r = document.createElement("style");
-			if (l.firstElementChild) l.firstElementChild.appendChild(r); else {
-				var a = d.createElement("div");
-				a.appendChild(r), d.write(a.innerHTML), a = null
-			}
-			n(), o.addEventListener("resize", function () {
-				clearTimeout(i), i = setTimeout(n, 300)
-			}, !1), o.addEventListener("pageshow", function (e) {
-				e.persisted && (clearTimeout(i), i = setTimeout(n, 300))
-			}, !1), "complete" === d.readyState ? d.body.style.fontSize = "16px" : d.addEventListener("DOMContentLoaded", function (e) {
-					d.body.style.fontSize = "16px"
-				}, !1)
-		}(640, 640);
+	    !function(e,t,n){function i(){var e=100*d.getBoundingClientRect().width/n;l.innerHTML="html{font-size:"+e+"px;}"}var d=t.documentElement,l=t.createElement("style"),o=e.devicePixelRatio||1,a=null;if(n=n||640,d.firstElementChild)d.firstElementChild.appendChild(l);else{var r=t.createElement("div");r.appendChild(l),t.write(r.innerHTML),r=null}if(i(),e.addEventListener("resize",function(){clearTimeout(a),a=setTimeout(i,300)},!1),e.addEventListener("pageshow",function(e){e.persisted&&(clearTimeout(a),a=setTimeout(i,300))},!1),"complete"===t.readyState?t.body.style.fontSize="16px":t.addEventListener("DOMContentLoaded",function(e){t.body.style.fontSize="16px"},!1),o>=2){var s=t.createElement("body"),c=t.createElement("div");c.style.border=".5px solid transparent",s.appendChild(c),d.appendChild(s),1===c.offsetHeight&&d.classList.add("hairlines"),d.removeChild(s)}}(window,document,1008);
     </script>
-    
+
+    <style>
+
+        * {
+            padding: 0;
+            border: 0;
+            margin: 0;
+            font-size: 0.5rem;
+        }
+
+        body {
+            position: fixed;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+        }
+
+        #loading {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 6.4rem;
+            height: 10.08rem;
+            background-color: rgba(0, 0, 0, 0.5);
+        }
+
+        #test {
+            width: 100%;
+            height: 100%;
+        }
+
+        #text_1 {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 1rem;
+            height: 1rem;
+            background-color: rgba(1, 1, 1, 0.5);
+        }
+
+        #text_2 {
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 1rem;
+            height: 1rem;
+            background-color: rgba(1, 1, 1, 0.5);
+        }
+
+        #text_3 {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 1rem;
+            height: 1rem;
+            background-color: rgba(1, 1, 1, 0.5);
+        }
+
+        #text_4 {
+            position: absolute;
+            bottom: 0;
+            right: 0;
+            width: 1rem;
+            height: 1rem;
+            background-color: rgba(1, 1, 1, 0.5);
+        }
+
+    </style>
+
 </head>
 <body>
+
+<div id="loading"></div>
+
+<div id="test">
+    <span id="text_1">1</span>
+    <span id="text_2">2</span>
+    <span id="text_3">3</span>
+    <span id="text_4">4</span>
+</div>
 
 </body>
 </html>
