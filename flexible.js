@@ -1,51 +1,145 @@
-(function (designWidth, designHeight) {
+/**
+ *
+ * @param designWidth   设计稿宽度
+ * @param designHeight  设计稿高度
+ * @param orientation   内容方向 portrait || landscape
+ * @param policy        适配策略 fixed_height || fixed_width || no_border
+ */
+
+var flexible = (function (designWidth, designHeight, orientation, policy) {
 	designWidth  = designWidth || 640;
 	designHeight = designHeight || 1008;
+	orientation  = orientation || 'portrait';
+	policy       = policy || 'fixed_width';
 
-	var docEl    = document.documentElement;
-	var remStyle = document.createElement("style");
-	var dpr      = window.devicePixelRatio || 1;
-	var tid      = null;
+	var docEl = document.documentElement;
+	var docBo = document.body;
+	var dpr   = window.devicePixelRatio || 1;
 
-	function refreshRem() {
-		var width  = docEl.getBoundingClientRect().width;
-		var height = docEl.getBoundingClientRect().height;
+	var canResize = true;
+	var timer     = null;
 
-		var rem = width * 100 / designWidth;
+	// adjust body font size
+	function setBodyFontSize() {
+		if (document.body) {
+			docBo                = document.body;
+			docBo.style.fontSize = (12 * dpr) + 'px';
 
-		remStyle.innerHTML = 'html{font-size:' + rem + 'px;}';
-	}
+			console.log('setBodyFontSize');
 
-	if (docEl.firstElementChild) {
-		docEl.firstElementChild.appendChild(remStyle);
-	} else {
-		var wrap = document.createElement("div");
-		wrap.appendChild(remStyle);
-		document.write(wrap.innerHTML);
-		wrap = null;
-	}
+			var width  = docEl.clientWidth;
+			var height = docEl.clientHeight;
 
-	//要等 wiewport 设置好后才能执行 refreshRem，不然 refreshRem 会执行2次；
-	refreshRem();
+			console.log(width, height);
 
-	window.addEventListener("resize", function () {
-		clearTimeout(tid); //防止执行两次
-		tid = setTimeout(refreshRem, 300);
-	}, false);
+			if (docBo) {
+				if (width < height) {
+					docBo.style.transform = 'rotate(-90deg)';
+					docBo.style.width     = height + 'px';
+					docBo.style.height    = width + 'px';
+				} else {
+					docBo.style.transform = 'rotate(0)';
+					// docBo.style.width     = width + 'px';
+					// docBo.style.height    = height + 'px';
+				}
+			}
 
-	window.addEventListener("pageshow", function (e) {
-		if (e.persisted) { // 浏览器后退的时候重新计算
-			clearTimeout(tid);
-			tid = setTimeout(refreshRem, 300);
+		} else {
+			document.addEventListener('DOMContentLoaded', setBodyFontSize);
 		}
-	}, false);
+	}
 
-	if (document.readyState === "complete") {
-		document.body.style.fontSize = "16px";
-	} else {
-		document.addEventListener("DOMContentLoaded", function (e) {
-			document.body.style.fontSize = "16px";
-		}, false);
+	setBodyFontSize();
+
+	function resetRem() {
+
+		console.log('resetRem');
+
+
+		var rem    = 1;
+		var width  = docEl.clientWidth;
+		var height = docEl.clientHeight;
+
+		console.log(width, height);
+
+
+		var isWider = width / height > ( designWidth / designHeight);
+		var isWidth = true;
+
+		switch (policy) {
+			case 'fixed_width':
+				isWidth = true;
+				break;
+			case 'fixed_height':
+				isWidth = false;
+				break;
+			case 'no_border':
+				isWidth = isWider;
+				break;
+			default:
+		}
+
+		console.log(isWider);
+		console.log(isWidth);
+
+		if (isWidth) {
+			rem = width * 100 / designWidth;
+		} else {
+			rem = height * 100 / designHeight;
+		}
+
+		if (docBo) {
+			if (width < height) {
+				docBo.style.transform = 'rotate(-90deg)';
+				docBo.style.width     = height + 'px';
+				docBo.style.height    = width + 'px';
+			} else {
+				docBo.style.transform = 'rotate(0)';
+				docBo.style.width     = width + 'px';
+				docBo.style.height    = height + 'px';
+			}
+		}
+
+		console.log(rem);
+
+		docEl.style.fontSize = rem + 'px';
+
+		timer = null;
+	}
+
+	resetRem();
+
+	function resizeWithDelay(duration) {
+		duration = duration || 0;
+		timer && clearTimeout(timer);
+		timer = setTimeout(resetRem, duration);
+	}
+
+	function initListener() {
+		// reset rem unit on page resize
+		window.addEventListener('resize', function () {
+			if (canResize) {
+				resizeWithDelay(300);
+			}
+		});
+
+		if ('orientationchange' in window) {
+			window.addEventListener('orientationchange', function () {
+				resizeWithDelay(300);
+			});
+		}
+
+		window.addEventListener('pageshow', function (e) {
+			if (e.persisted) {
+				resizeWithDelay(300);
+			}
+		});
+	}
+
+	initListener();
+
+	function switchResize(result) {
+		canResize = result;
 	}
 
 	// detect 0.5px supports
@@ -58,6 +152,10 @@
 		if (testElement.offsetHeight === 1) {
 			docEl.classList.add('hairlines')
 		}
-		docEl.removeChild(fakeBody);
+		docEl.removeChild(fakeBody)
 	}
-}(640, 1008));
+
+	return {
+		switchResize: switchResize
+	};
+}(640, 1008, 'portrait', 'no_border'));
