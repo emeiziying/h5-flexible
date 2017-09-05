@@ -4,7 +4,7 @@
  * @param designHeight  设计稿高度
  */
 
-var flexible = (function (designWidth, designHeight) {
+var Flexible = function (designWidth, designHeight) {
 	designWidth  = designWidth || 640;
 	designHeight = designHeight || 1008;
 
@@ -52,6 +52,7 @@ var flexible = (function (designWidth, designHeight) {
 
 			docBo.style.transformOrigin = '0 0';
 			docBo.style.transform       = 'translate(' + x + 'px,' + y + 'px) rotate(' + r + 'deg)';
+			docBo.style.webkitTransform = 'translate(' + x + 'px,' + y + 'px) rotate(' + r + 'deg)';
 			docBo.style.width           = w + 'px';
 			docBo.style.height          = h + 'px';
 		} else {
@@ -62,19 +63,14 @@ var flexible = (function (designWidth, designHeight) {
 	setBodyFontSize();
 
 	function resetRem() {
-
-		console.log('resetRem');
-
 		var width  = docEl.clientWidth;
 		var height = docEl.clientHeight;
 		var rem    = 1;
-
-
-		var w = width;
-		var h = height;
-		var r = 0;
-		var x = 0;
-		var y = 0;
+		var w      = width;
+		var h      = height;
+		var r      = 0;
+		var x      = 0;
+		var y      = 0;
 
 		if (designWidth > designHeight) {
 			if (width > height) {
@@ -103,6 +99,7 @@ var flexible = (function (designWidth, designHeight) {
 		if (docBo) {
 			docBo.style.transformOrigin = '0 0';
 			docBo.style.transform       = 'translate(' + x + 'px,' + y + 'px) rotate(' + r + 'deg)';
+			docBo.style.webkitTransform = 'translate(' + x + 'px,' + y + 'px) rotate(' + r + 'deg)';
 			docBo.style.width           = w + 'px';
 			docBo.style.height          = h + 'px';
 		}
@@ -142,7 +139,9 @@ var flexible = (function (designWidth, designHeight) {
 	initListener();
 
 	function switchResize(result) {
-		canResize = result;
+		canResize = result != undefined ? result : !canResize;
+
+		return canResize;
 	}
 
 	// detect 0.5px supports
@@ -161,4 +160,4 @@ var flexible = (function (designWidth, designHeight) {
 	return {
 		switchResize: switchResize
 	};
-}(640, 1008));
+};
