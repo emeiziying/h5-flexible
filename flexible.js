@@ -2,15 +2,11 @@
  *
  * @param designWidth   设计稿宽度
  * @param designHeight  设计稿高度
- * @param orientation   内容方向 portrait || landscape
- * @param policy        适配策略 fixed_height || fixed_width || no_border
  */
 
-var flexible = (function (designWidth, designHeight, orientation, policy) {
+var flexible = (function (designWidth, designHeight) {
 	designWidth  = designWidth || 640;
 	designHeight = designHeight || 1008;
-	orientation  = orientation || 'portrait';
-	policy       = policy || 'fixed_width';
 
 	var docEl = document.documentElement;
 	var docBo = document.body;
@@ -25,25 +21,39 @@ var flexible = (function (designWidth, designHeight, orientation, policy) {
 			docBo                = document.body;
 			docBo.style.fontSize = (12 * dpr) + 'px';
 
-			console.log('setBodyFontSize');
-
 			var width  = docEl.clientWidth;
 			var height = docEl.clientHeight;
 
-			console.log(width, height);
+			var w = width;
+			var h = height;
+			var r = 0;
+			var x = 0;
+			var y = 0;
 
-			if (docBo) {
-				if (width < height) {
-					docBo.style.transform = 'rotate(-90deg)';
-					docBo.style.width     = height + 'px';
-					docBo.style.height    = width + 'px';
+			if (designWidth > designHeight) {
+				if (width > height) {
+
 				} else {
-					docBo.style.transform = 'rotate(0)';
-					// docBo.style.width     = width + 'px';
-					// docBo.style.height    = height + 'px';
+					w = height;
+					h = width;
+					r = -90;
+					y = w;
+				}
+			} else {
+				if (width > height) {
+					w = height;
+					h = width;
+					r = -90;
+					y = w;
+				} else {
+
 				}
 			}
 
+			docBo.style.transformOrigin = '0 0';
+			docBo.style.transform       = 'translate(' + x + 'px,' + y + 'px) rotate(' + r + 'deg)';
+			docBo.style.width           = w + 'px';
+			docBo.style.height          = h + 'px';
 		} else {
 			document.addEventListener('DOMContentLoaded', setBodyFontSize);
 		}
@@ -55,54 +65,47 @@ var flexible = (function (designWidth, designHeight, orientation, policy) {
 
 		console.log('resetRem');
 
-
-		var rem    = 1;
 		var width  = docEl.clientWidth;
 		var height = docEl.clientHeight;
+		var rem    = 1;
 
-		console.log(width, height);
 
+		var w = width;
+		var h = height;
+		var r = 0;
+		var x = 0;
+		var y = 0;
 
-		var isWider = width / height > ( designWidth / designHeight);
-		var isWidth = true;
+		if (designWidth > designHeight) {
+			if (width > height) {
 
-		switch (policy) {
-			case 'fixed_width':
-				isWidth = true;
-				break;
-			case 'fixed_height':
-				isWidth = false;
-				break;
-			case 'no_border':
-				isWidth = isWider;
-				break;
-			default:
-		}
-
-		console.log(isWider);
-		console.log(isWidth);
-
-		if (isWidth) {
-			rem = width * 100 / designWidth;
-		} else {
-			rem = height * 100 / designHeight;
-		}
-
-		if (docBo) {
-			if (width < height) {
-				docBo.style.transform = 'rotate(-90deg)';
-				docBo.style.width     = height + 'px';
-				docBo.style.height    = width + 'px';
 			} else {
-				docBo.style.transform = 'rotate(0)';
-				docBo.style.width     = width + 'px';
-				docBo.style.height    = height + 'px';
+				w = height;
+				h = width;
+				r = -90;
+				y = w;
+			}
+		} else {
+			if (width > height) {
+				w = height;
+				h = width;
+				r = -90;
+				y = w;
+			} else {
+
 			}
 		}
 
-		console.log(rem);
+		rem = w * 100 / designWidth;
 
 		docEl.style.fontSize = rem + 'px';
+
+		if (docBo) {
+			docBo.style.transformOrigin = '0 0';
+			docBo.style.transform       = 'translate(' + x + 'px,' + y + 'px) rotate(' + r + 'deg)';
+			docBo.style.width           = w + 'px';
+			docBo.style.height          = h + 'px';
+		}
 
 		timer = null;
 	}
@@ -158,4 +161,4 @@ var flexible = (function (designWidth, designHeight, orientation, policy) {
 	return {
 		switchResize: switchResize
 	};
-}(640, 1008, 'portrait', 'no_border'));
+}(640, 1008));
