@@ -50,11 +50,7 @@ var Flexible = function (designWidth, designHeight) {
 				}
 			}
 
-			docBo.style.transformOrigin = '0 0';
-			docBo.style.transform       = 'translate(' + x + 'px,' + y + 'px) rotate(' + r + 'deg)';
-			docBo.style.webkitTransform = 'translate(' + x + 'px,' + y + 'px) rotate(' + r + 'deg)';
-			docBo.style.width           = w + 'px';
-			docBo.style.height          = h + 'px';
+			docBo.style.cssText = 'transform-origin:0 0;transform:translate(' + x + 'px,' + y + 'px) rotate(' + r + 'deg);-webkit-transform:translate(' + x + 'px,' + y + 'px) rotate(' + r + 'deg);width:' + w + 'px;height:' + h + 'px;';
 		} else {
 			document.addEventListener('DOMContentLoaded', setBodyFontSize);
 		}
@@ -97,11 +93,7 @@ var Flexible = function (designWidth, designHeight) {
 		docEl.style.fontSize = rem + 'px';
 
 		if (docBo) {
-			docBo.style.transformOrigin = '0 0';
-			docBo.style.transform       = 'translate(' + x + 'px,' + y + 'px) rotate(' + r + 'deg)';
-			docBo.style.webkitTransform = 'translate(' + x + 'px,' + y + 'px) rotate(' + r + 'deg)';
-			docBo.style.width           = w + 'px';
-			docBo.style.height          = h + 'px';
+			docBo.style.cssText = 'transform-origin:0 0;transform:translate(' + x + 'px,' + y + 'px) rotate(' + r + 'deg);-webkit-transform:translate(' + x + 'px,' + y + 'px) rotate(' + r + 'deg);width:' + w + 'px;height:' + h + 'px;';
 		}
 
 		timer = null;
@@ -144,7 +136,7 @@ var Flexible = function (designWidth, designHeight) {
 		return canResize;
 	}
 
-	// detect 0.5px supports
+// detect 0.5px supports
 	if (dpr >= 2) {
 		var fakeBody             = document.createElement('body');
 		var testElement          = document.createElement('div');
@@ -160,4 +152,5 @@ var Flexible = function (designWidth, designHeight) {
 	return {
 		switchResize: switchResize
 	};
-};
+}
+	;
