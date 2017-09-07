@@ -2,11 +2,13 @@
  *
  * @param designWidth   设计稿宽度
  * @param designHeight  设计稿高度
+ * @param scalePolicy   缩放策略
  */
 
-var Flexible = function (designWidth, designHeight) {
+var Flexible = function (designWidth, designHeight, scalePolicy) {
 	designWidth  = designWidth || 640;
 	designHeight = designHeight || 1008;
+	scalePolicy  = scalePolicy || 'no_border';
 
 	var docEl = document.documentElement;
 	var docBo = document.body;
@@ -14,6 +16,67 @@ var Flexible = function (designWidth, designHeight) {
 
 	var canResize = true;
 	var timer     = null;
+
+	// 获取css
+	function getCssText(w, h, r, x, y) {
+		return 'transform-origin:0 0;transform:translate(' + x + 'px,' + y + 'px) rotate(' + r + 'deg);-webkit-transform:translate(' + x + 'px,' + y + 'px) rotate(' + r + 'deg);width:' + w + 'px;height:' + h + 'px;';
+	}
+
+	function getWHRXY(width, height) {
+		var w = width;
+		var h = height;
+		var r = 0;
+		var x = 0;
+		var y = 0;
+
+		// 设计稿横屏
+		if (designWidth > designHeight) {
+			// 屏幕竖屏
+			if (width <= height) {
+				w = height;
+				h = width;
+				r = -90;
+				y = w;
+			}
+		}
+		// 设计稿竖屏
+		else {
+			// 屏幕横屏
+			if (width > height) {
+				w = height;
+				h = width;
+				r = -90;
+				y = w;
+			}
+		}
+
+		return [w, h, r, x, y];
+	}
+
+	function getRem(w, h) {
+		var ratioDWH = designWidth / designHeight;
+		var ratioWH  = w / h;
+
+		var isWider    = ratioWH > ratioDWH;
+		var isFixWidth = false;
+
+		switch (scalePolicy) {
+			case 'fixed_width':
+				isFixWidth = true;
+				break;
+			case 'fixed_height':
+				isFixWidth = false;
+				break;
+			case 'no_border':
+				isFixWidth = isWider;
+				break;
+			default:
+		}
+
+		var rem = (isFixWidth ? w / designWidth : h / designHeight) * 100;
+
+		return rem;
+	}
 
 	// adjust body font size
 	function setBodyFontSize() {
@@ -24,33 +87,15 @@ var Flexible = function (designWidth, designHeight) {
 			var width  = docEl.clientWidth;
 			var height = docEl.clientHeight;
 
-			var w = width;
-			var h = height;
-			var r = 0;
-			var x = 0;
-			var y = 0;
+			var whrxy = getWHRXY(width, height);
 
-			if (designWidth > designHeight) {
-				if (width > height) {
+			var w = whrxy[0];
+			var h = whrxy[1];
+			var r = whrxy[2];
+			var x = whrxy[3];
+			var y = whrxy[4];
 
-				} else {
-					w = height;
-					h = width;
-					r = -90;
-					y = w;
-				}
-			} else {
-				if (width > height) {
-					w = height;
-					h = width;
-					r = -90;
-					y = w;
-				} else {
-
-				}
-			}
-
-			docBo.style.cssText = 'transform-origin:0 0;transform:translate(' + x + 'px,' + y + 'px) rotate(' + r + 'deg);-webkit-transform:translate(' + x + 'px,' + y + 'px) rotate(' + r + 'deg);width:' + w + 'px;height:' + h + 'px;';
+			docBo.style.cssText = getCssText(w, h, r, x, y);
 		} else {
 			document.addEventListener('DOMContentLoaded', setBodyFontSize);
 		}
@@ -61,39 +106,21 @@ var Flexible = function (designWidth, designHeight) {
 	function resetRem() {
 		var width  = docEl.clientWidth;
 		var height = docEl.clientHeight;
-		var rem    = 1;
-		var w      = width;
-		var h      = height;
-		var r      = 0;
-		var x      = 0;
-		var y      = 0;
 
-		if (designWidth > designHeight) {
-			if (width > height) {
+		var whrxy = getWHRXY(width, height);
 
-			} else {
-				w = height;
-				h = width;
-				r = -90;
-				y = w;
-			}
-		} else {
-			if (width > height) {
-				w = height;
-				h = width;
-				r = -90;
-				y = w;
-			} else {
+		var w = whrxy[0];
+		var h = whrxy[1];
+		var r = whrxy[2];
+		var x = whrxy[3];
+		var y = whrxy[4];
 
-			}
-		}
-
-		rem = w * 100 / designWidth;
+		var rem = getRem(w, h);
 
 		docEl.style.fontSize = rem + 'px';
 
 		if (docBo) {
-			docBo.style.cssText = 'transform-origin:0 0;transform:translate(' + x + 'px,' + y + 'px) rotate(' + r + 'deg);-webkit-transform:translate(' + x + 'px,' + y + 'px) rotate(' + r + 'deg);width:' + w + 'px;height:' + h + 'px;';
+			docBo.style.cssText = getCssText(w, h, r, x, y);
 		}
 
 		timer = null;
@@ -136,7 +163,7 @@ var Flexible = function (designWidth, designHeight) {
 		return canResize;
 	}
 
-// detect 0.5px supports
+	// detect 0.5px supports
 	if (dpr >= 2) {
 		var fakeBody             = document.createElement('body');
 		var testElement          = document.createElement('div');
@@ -152,5 +179,4 @@ var Flexible = function (designWidth, designHeight) {
 	return {
 		switchResize: switchResize
 	};
-}
-	;
+};
