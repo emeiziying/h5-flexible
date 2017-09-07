@@ -29,7 +29,7 @@
    </script>
 ```
 
-#示例  
+# 示例  
 [强制竖屏](https://emeiziying.github.io/h5-flexible/examples/portrait/)  
 [强制横屏](https://emeiziying.github.io/h5-flexible/examples/landscape/)  
 [关闭resize](https://emeiziying.github.io/h5-flexible/examples/resize/)  
