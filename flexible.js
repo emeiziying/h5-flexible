@@ -35,8 +35,8 @@ var Flexible = function (designWidth, designHeight, scalePolicy) {
 			if (width <= height) {
 				w = height;
 				h = width;
-				r = -90;
-				y = w;
+				r = 90;
+				x = h;
 			}
 		}
 		// 设计稿竖屏
@@ -45,8 +45,8 @@ var Flexible = function (designWidth, designHeight, scalePolicy) {
 			if (width > height) {
 				w = height;
 				h = width;
-				r = -90;
-				y = w;
+				r = 90;
+				x = h;
 			}
 		}
 
